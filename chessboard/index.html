@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chessboard</title>
+</head>
+<body>
+    <h1>Welcome to my Chessboard!!</h1>
+    <canvas id="chessboard" width="800" height="800" style="border:5px solid gray" onmousedown="boardClick(event)" oncontextmenu="return false;"></canvas>
+    <button onclick="requestBoard()">Sync Board</button>
+    <select id="piece">
+        <option value="empty">empty</option>
+    </select>
+    <script src="main.js"></script>
+    <script>drawBoard()</script>
+</body>
+</html>
