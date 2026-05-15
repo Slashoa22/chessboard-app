@@ -6,21 +6,33 @@ var boardState =
   ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
   ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
   ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
-  ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty']]
+  ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty']];
 
-var socket = new WebSocket("ws://"+window.location.host+"/ws")
+var chatlog = [];
+
+var socket = new WebSocket("ws://"+window.location.host+"/ws");
 
 socket.onopen = function() {requestBoard()}
 
 socket.onmessage = function(event) {
     var update = JSON.parse(event.data);
     if (Array.isArray(update)) {
-        boardState = update
+        boardState = update;
+        drawBoard();
     }
     else {
-        boardState[update.row][update.col] = update.piece;
+        if (update.type === "board") {
+            boardState[update.row][update.col] = update.piece;
+            drawBoard();
+        }
+        else if (update.type === "chat") {
+            chatlog.push(update.msg);
+            if (chatlog.length > 30) {
+                chatlog.shift();
+            }
+            document.getElementById("chat").innerHTML = chatlog.join("<br>");
+        }
     }
-    drawBoard();
 }
 
 function drawBoard() {
@@ -54,12 +66,22 @@ function drawBoard() {
 function sendUpdate(row, col, piece) {
     socket.send(JSON.stringify(
         {
+            type: "board",
             row: row,
             col: col,
             piece: piece
         }
-    )
-    )
+    ))
+}
+
+function sendMessage() {
+    socket.send(JSON.stringify(
+        {
+            type: "chat",
+            msg: document.getElementById("chatbox").value
+        }
+    ))
+    document.getElementById("chatbox").value = ""
 }
 
 function requestBoard() {

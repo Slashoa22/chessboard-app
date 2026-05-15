@@ -1,17 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="style.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chessboard</title>
 </head>
 <body>
     <h1>Welcome to my Chessboard!!</h1>
-    <canvas id="chessboard" width="700" height="700" style="border:5px solid gray" onmousedown="boardClick(event)" oncontextmenu="return false;"></canvas>
+    <div class="waffles">
+        <canvas class="chessboard" id="chessboard" height=750px width=750px style="border:5px solid gray" onmousedown="boardClick(event)" oncontextmenu="return false;"></canvas>
+        <div class="chatdiv">
+            <p id="chat" class="chat">Welcome to the Chat!</p>
+            <div class="waffles">
+                <input id="chatbox" class="chatbox">
+                <button class="send" onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
     <button onclick="requestBoard()">Sync Board</button>
     <select id="piece">
         <option value="empty">empty</option>
     </select>
+    <p>
+        Instructions:
+        LMB to place piece selected in dropdown,
+        MMB to select piece mouse is over,
+        RMB to remove piece
+    </p>
     <script src="main.js"></script>
     <script>drawBoard()</script>
 </body>

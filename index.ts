@@ -15,7 +15,7 @@ let boardState =
 function parseMove(ws: ServerWebSocket, message: string | Buffer<ArrayBuffer>) {
     try {
         let msg = JSON.parse(String(message));
-        if (msg.row >= 0 && msg.row <= 8 && msg.col >= 0 && msg.col <= 8) {
+        if (msg.type === "board" &&msg.row >= 0 && msg.row <= 8 && msg.col >= 0 && msg.col <= 8) {
             // @ts-expect-error
             boardState[msg.row][msg.col] = msg.piece;
             for (let c of cls) {
@@ -30,10 +30,25 @@ function parseMove(ws: ServerWebSocket, message: string | Buffer<ArrayBuffer>) {
     }
 }
 
+function parseMessage(message: string | Buffer<ArrayBuffer>) {
+    try {
+        let msg = JSON.parse(String(message));
+        if (msg.type === "chat") {
+            for (let c of cls) {
+                c.send(message);
+            }
+            console.log(`message: ${msg.msg}`);
+        }
+    } catch (e) {
+        console.warn(`um.. your message didn't parse: ${message}`);
+    }
+}
+
 Bun.serve({
     routes: {
         "/": () => new Response(Bun.file("chessboard/index.html")),
-        "/main.js": () => new Response(Bun.file("chessboard/main.js"))
+        "/main.js": () => new Response(Bun.file("chessboard/main.js")),
+        "/style.css": () => new Response(Bun.file("chessboard/style.css"))
     },
     fetch(req, server) {
         const path = new URL(req.url).pathname
@@ -54,15 +69,16 @@ Bun.serve({
         message(ws, message) {
             console.log(message)
             if (message !== "boardState") {
-                parseMove(ws, message)
+                parseMove(ws, message);
+                parseMessage(message);
             }
             else {
-                ws.send(JSON.stringify(boardState))
+                ws.send(JSON.stringify(boardState));
             }
-            console.log("\n")
+            console.log("\n");
         },
         close(ws) {
-            cls.delete(ws)
+            cls.delete(ws);
             console.log(`${ws} disconnected💀`);
         }
     }

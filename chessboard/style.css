@@ -1,0 +1,40 @@
+h1 {
+    font-family: 'Comic Sans MS';
+    color:magenta;
+    text-align: center;
+}
+
+p {
+    font-family: 'Comic Sans MS';
+    color:white;
+}
+
+body {
+    background-color: #444;
+}
+
+.waffles {
+    margin-top: auto;
+    display: flex;
+    margin-left: 5%;
+}
+
+.chatdiv {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+.chatbox {
+    width: 100%;
+}
+
+.chat {
+    text-align: right;
+    color: white;
+    font-family: 'Comic Sans MS';
+    font-size: 18px;
+}
+
