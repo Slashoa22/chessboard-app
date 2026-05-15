@@ -2,19 +2,20 @@ import type { ServerWebSocket } from "bun";
 console.log("Running")
 let cls = new Set<ServerWebSocket>()
 let boardState =   
- [['pc2'  , 'empty', 'pc2'  , 'empty', 'pc2'  , 'empty', 'pc2'  , 'empty'],
-  ['empty', 'pc2'  , 'empty', 'pc2'  , 'empty', 'pc2'  , 'empty', 'pc2'  ],
-  ['pc2'  , 'empty', 'pc2'  , 'empty', 'pc2'  , 'empty', 'pc2'  , 'empty'],
-  ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
-  ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
-  ['empty', 'pc1'  , 'empty', 'pc1'  , 'empty', 'pc1'  , 'empty', 'pc1'  ],
-  ['pc1'  , 'empty', 'pc1'  , 'empty', 'pc1'  , 'empty', 'pc1'  , 'empty'],
-  ['empty', 'pc1'  , 'empty', 'pc1'  , 'empty', 'pc1'  , 'empty', 'pc1'  ]]
+[['Black Rook', 'Black Knight', 'Black Bishop', 'Black Queen', 'Black King', 'Black Bishop', 'Black Knight', 'Black Rook'],
+['Black Pawn', 'Black Pawn', 'Black Pawn', 'Black Pawn', 'Black Pawn', 'Black Pawn', 'Black Pawn', 'Black Pawn'],
+['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
+['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
+['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
+['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
+['White Pawn', 'White Pawn', 'White Pawn', 'White Pawn', 'White Pawn', 'White Pawn', 'White Pawn', 'White Pawn'],
+['White Rook', 'White Knight', 'White Bishop', 'White Queen', 'White King', 'White Bishop', 'White Knight', 'White Rook']]
+
 
 function parseMove(ws: ServerWebSocket, message: string | Buffer<ArrayBuffer>) {
     try {
         let msg = JSON.parse(String(message));
-        if (!(msg.row >= 0 && msg.row <= 8 && msg.col >= 0 && msg.col <= 0)) {
+        if (msg.row >= 0 && msg.row <= 8 && msg.col >= 0 && msg.col <= 8) {
             // @ts-expect-error
             boardState[msg.row][msg.col] = msg.piece;
             for (let c of cls) {
@@ -58,6 +59,7 @@ Bun.serve({
             else {
                 ws.send(JSON.stringify(boardState))
             }
+            console.log("\n")
         },
         close(ws) {
             cls.delete(ws)

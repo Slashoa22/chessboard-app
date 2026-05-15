@@ -104,6 +104,23 @@ var pieces = {
     }
 }
 
-pieces.initImage("pc1","assets/pc1.webp");
-pieces.initImage("pc2","assets/pc2.webp");
+pieces.initImage("White Checker","assets/white_checker.webp");
+pieces.initImage("White Checker Queen","assets/white_checker_queen.webp");
+
+pieces.initImage("Black Checker","assets/black_checker.webp");
+pieces.initImage("Black Checker Queen","assets/black_checker_queen.webp");
+
+pieces.initImage("White Pawn", "assets/white_pawn.webp");
+pieces.initImage("White Rook", "assets/white_rook.webp");
+pieces.initImage("White Knight", "assets/white_knight.webp");
+pieces.initImage("White Bishop", "assets/white_bishop.webp");
+pieces.initImage("White Queen", "assets/white_queen.webp");
+pieces.initImage("White King", "assets/white_king.webp");
+
+pieces.initImage("Black Pawn", "assets/black_pawn.webp");
+pieces.initImage("Black Rook", "assets/black_rook.webp");
+pieces.initImage("Black Knight", "assets/black_knight.webp");
+pieces.initImage("Black Bishop", "assets/black_bishop.webp");
+pieces.initImage("Black Queen", "assets/black_queen.webp");
+pieces.initImage("Black King", "assets/black_king.webp");
 
