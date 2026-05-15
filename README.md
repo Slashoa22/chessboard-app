@@ -1,10 +1,17 @@
-# tiny-checkerboard-app
+# chessboard-app
 
-To install dependencies:
+This is a small online chessboard app I made (to play checkers).
 
-```bash
-bun install
-```
+---
+
+# Features:
+
+- **2** Different Pieces
+- **1** Board
+- **0** Rule Checking
+- Some **online** functionality
+
+---
 
 To run:
 
