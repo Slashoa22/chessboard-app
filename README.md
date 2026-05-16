@@ -16,7 +16,7 @@ This is a small online chessboard app I made (to play checkers).
 To run:
 
 ```bash
-bun run index.ts
+bun run index.js
 ```
 
 This project was created using `bun init` in bun v1.3.9. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.

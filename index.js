@@ -1,7 +1,5 @@
-import type { ServerWebSocket } from "bun";
-import { formatDiagnostic } from "typescript";
 console.log("Running")
-let cls = new Set<ServerWebSocket>()
+let cls = new Set()
 let boardState =
 {
     toUpdateDouleMove: [],
@@ -65,12 +63,11 @@ let boardState =
     ]
 }
 
-function isLegal(fromCol: Number, fromRow: Number, toCol: Number, toRow: Number) {
+function isLegal(fromCol, fromRow, toCol, toRow) {
     return true;
 }
 
-function parseMove(ws: ServerWebSocket, message: string | Buffer<ArrayBuffer>) {
-    // i'm sure all of these @ts-expect-error are fine
+function parseMove(ws, message) {
     try {
         let msg = JSON.parse(String(message));
         if (msg.type !== "board") {
@@ -87,28 +84,23 @@ function parseMove(ws: ServerWebSocket, message: string | Buffer<ArrayBuffer>) {
             return;
         }
         for (let p of boardState.toUpdateDouleMove) {
-            // @ts-expect-error
             boardState[p.row][p.col].justDoubleMoved = false;
         }
-        // @ts-expect-error
         let piece = boardState.board[msg.from.row][msg.from.col]
         if ((
-            piece!.type === "White King" ||
-            piece!.type === "Black King" ||
-            piece!.type === "White Rook" || 
-            piece!.type === "Black Rook")
-            // @ts-expect-error
+            piece.type === "White King" ||
+            piece.type === "Black King" ||
+            piece.type === "White Rook" || 
+            piece.type === "Black Rook")
             && piece.hasMoved === false)
         {
-            // @ts-expect-error
-            piece!.hasMoved = true;
+            piece.hasMoved = true;
         }
         if ((
-            piece!.type === "White Pawn" ||
-            piece!.type === "Black Pawn" )
+            piece.type === "White Pawn" ||
+            piece.type === "Black Pawn" )
             && Math.abs(msg.from.row - msg.to.row) === 2)
         {
-            // @ts-expect-error
             piece.justDoubleMoved = true;
         }
         let move = {
@@ -123,9 +115,7 @@ function parseMove(ws: ServerWebSocket, message: string | Buffer<ArrayBuffer>) {
             },
             piece: piece
         }
-        // @ts-expect-error
         boardState.board[move.from.row][move.from.col] = { type: 'empty'};
-        // @ts-expect-error
         boardState.board[move.to.row][move.to.col] = piece;
         for (let c of cls) {
             c.send(JSON.stringify(move));
@@ -136,14 +126,13 @@ function parseMove(ws: ServerWebSocket, message: string | Buffer<ArrayBuffer>) {
     }
 }
 
-function parsePlace(ws: ServerWebSocket, message: string | Buffer<ArrayBuffer>) {
+function parsePlace(ws, message) {
     try {
         let msg = JSON.parse(String(message));
         if (msg.type !== "place") {
             return;
         }
         for (let p of boardState.toUpdateDouleMove) {
-            // @ts-expect-error
             boardState[p.row][p.col].justDoubleMoved = false;
         }
         let row = msg.row;
@@ -154,18 +143,14 @@ function parsePlace(ws: ServerWebSocket, message: string | Buffer<ArrayBuffer>) 
             piece.type === "Black King" ||
             piece.type === "White Rook" || 
             piece.type === "Black Rook") {
-                // @ts-expect-error
                 placePiece.hasMoved = false;
             }
         if (piece.type === "White Pawn" ||
             piece.type === "Black Pawn" )
              {
-                // @ts-expect-error
                 placePiece.justDoubleMoved = false;
             }
-        // @ts-expect-error
         placePiece.type = piece.type;
-         // @ts-expect-error
         boardState.board[row][col] = placePiece;
         boardState
         for (let c of cls) {
@@ -180,7 +165,7 @@ function parsePlace(ws: ServerWebSocket, message: string | Buffer<ArrayBuffer>) 
     }
 }
 
-function parseMessage(message: string | Buffer<ArrayBuffer>) {
+function parseMessage(message) {
     try {
         let msg = JSON.parse(String(message));
         if (msg.type === "chat") {
