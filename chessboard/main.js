@@ -1,12 +1,74 @@
-var boardState =   
- [['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
-  ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
-  ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
-  ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
-  ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
-  ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
-  ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty'],
-  ['empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty']];
+var boardState =
+{
+    selectedPiece: {
+        exists: false,
+        row: 0,
+        col: 0,
+    },
+    board: [
+        [
+            { type: 'Black Rook', hasMoved: false },
+            { type: 'Black Knight' },
+            { type: 'Black Bishop' },
+            { type: 'Black Queen' },
+            { type: 'Black King', hasMoved: false },
+            { type: 'Black Bishop' },
+            { type: 'Black Knight' },
+            { type: 'Black Rook', hasMoved: false }
+        ],
+        [
+            { type: 'Black Pawn', justDoubleMoved: false },
+            { type: 'Black Pawn', justDoubleMoved: false },
+            { type: 'Black Pawn', justDoubleMoved: false },
+            { type: 'Black Pawn', justDoubleMoved: false },
+            { type: 'Black Pawn', justDoubleMoved: false },
+            { type: 'Black Pawn', justDoubleMoved: false },
+            { type: 'Black Pawn', justDoubleMoved: false },
+            { type: 'Black Pawn', justDoubleMoved: false }
+        ],
+        [
+            { type: 'empty' }, { type: 'empty' }, { type: 'empty' }, { type: 'empty' },
+            { type: 'empty' }, { type: 'empty' }, { type: 'empty' }, { type: 'empty' }
+        ],
+        [
+            { type: 'empty' }, { type: 'empty' }, { type: 'empty' }, { type: 'empty' },
+            { type: 'empty' }, { type: 'empty' }, { type: 'empty' }, { type: 'empty' }
+        ],
+        [
+            { type: 'empty' }, { type: 'empty' }, { type: 'empty' }, { type: 'empty' },
+            { type: 'empty' }, { type: 'empty' }, { type: 'empty' }, { type: 'empty' }
+        ],
+        [
+            { type: 'empty' }, { type: 'empty' }, { type: 'empty' }, { type: 'empty' },
+            { type: 'empty' }, { type: 'empty' }, { type: 'empty' }, { type: 'empty' }
+        ],
+        [
+            { type: 'White Pawn', justDoubleMoved: false },
+            { type: 'White Pawn', justDoubleMoved: false },
+            { type: 'White Pawn', justDoubleMoved: false },
+            { type: 'White Pawn', justDoubleMoved: false },
+            { type: 'White Pawn', justDoubleMoved: false },
+            { type: 'White Pawn', justDoubleMoved: false },
+            { type: 'White Pawn', justDoubleMoved: false },
+            { type: 'White Pawn', justDoubleMoved: false }
+        ],
+        [
+            { type: 'White Rook', hasMoved: false },
+            { type: 'White Knight' },
+            { type: 'White Bishop' },
+            { type: 'White Queen' },
+            { type: 'White King', hasMoved: false },
+            { type: 'White Bishop' },
+            { type: 'White Knight' },
+            { type: 'White Rook', hasMoved: false }
+        ]
+    ]
+}
+
+var boardCanvas = document.getElementById("chessboard");
+var ctx = boardCanvas.getContext("2d");
+var space_width = boardCanvas.width / 8;
+var space_height = boardCanvas.height / 8;
 
 var chatlog = [];
 
@@ -14,62 +76,108 @@ var socket = new WebSocket("ws://"+window.location.host+"/ws");
 
 socket.onopen = function() {requestBoard()}
 
+
 socket.onmessage = function(event) {
     var update = JSON.parse(event.data);
-    if (Array.isArray(update)) {
-        boardState = update;
-        drawBoard();
-    }
-    else {
-        if (update.type === "board") {
-            boardState[update.row][update.col] = update.piece;
+    switch (update.type) {
+        case "setBoard":
+            boardState.board = update.board;
             drawBoard();
-        }
-        else if (update.type === "chat") {
+            break;
+        case "board":
+            if (update.success === false) {
+                console.log("Illegal!")
+                break;
+            }
+            boardState.board[update.from.row][update.from.col] = { type: 'empty' };
+            boardState.board[update.to.row][update.to.col] = update.piece;
+            drawBoard();
+            break;
+        case "chat":
             chatlog.push(update.msg);
             if (chatlog.length > 30) {
                 chatlog.shift();
             }
             document.getElementById("chat").innerHTML = chatlog.join("<br>");
-        }
+            break;
+        default:
+            console.warn("bro literally sent fake shi:", update.type);
     }
 }
+
 
 function drawBoard() {
-    var boardCanvas = document.getElementById("chessboard");
-    var ctx = boardCanvas.getContext("2d");
-    var space_width = boardCanvas.width / 8;
-    var space_height = boardCanvas.height / 8;
     for (var row = 0; row < 8; row++) {
         for (var col = 0; col < 8; col++) {
-            if ((row+col) % 2 === 0) {
-                ctx.fillStyle = "Gray";
-            }
-            else {
-                ctx.fillStyle = "Gainsboro";
-            }
-            ctx.fillRect(col*space_height, row*space_width, space_height, space_width);
-            var img = boardState[row][col];
-            if (img !== "empty") {
-                if (pieces[img] && pieces[img].naturalWidth > 0) {
-                    ctx.drawImage(pieces[img],col*space_height, row*space_width, space_height, space_width);
-                }
-                else {
-                    ctx.fillStyle = "Red";
-                    ctx. fillRect(col*space_height, row*space_width, space_height, space_width)
-                }
-            }
+            drawSpace(row, col);
+            drawPiece(row, col);
         }
     }
 }
 
-function sendUpdate(row, col, piece) {
+function drawSpace(row, col) {
+    if ((row+col) % 2 === 0) {
+        if (boardState.selectedPiece.exists &&
+            row === boardState.selectedPiece.row &&
+            col === boardState.selectedPiece.col) {
+                ctx.fillStyle = "#e65c78";
+            }
+            else {
+                ctx.fillStyle = "Gray";  //#808080
+            }
+        }
+    else {
+        if (boardState.selectedPiece.exists &&
+            row === boardState.selectedPiece.row &&
+            col === boardState.selectedPiece.col) {
+                ctx.fillStyle = "#e65c78"; 
+            }
+        else {
+            ctx.fillStyle = "Gainsboro"; //#DCDCDC
+        }
+    }
+    ctx.fillRect(col*space_height, row*space_width, space_height, space_width);
+}
+
+
+function drawPiece(row, col) {
+    var piece = boardState.board[row][col]
+    var type = piece.type
+    if (type === "empty") {
+        return
+    }
+    if (pieces[type] && pieces[type].naturalWidth > 0) {
+        ctx.drawImage(pieces[type],col*space_height, row*space_width, space_height, space_width);
+    }
+    else {
+        ctx.fillStyle = "Green";
+        ctx. fillRect(col*space_height, row*space_width, space_height, space_width)
+    }
+}
+
+function sendMove(fromRow, fromCol, toRow, toCol) {
     socket.send(JSON.stringify(
         {
             type: "board",
+            from: {
+                row: fromRow,
+                col: fromCol
+            },
+            to: {
+                row: toRow,
+                col: toCol
+            },
+        }
+    ))
+}
+
+function sendPlace(piece, row, col) {
+    socket.send(JSON.stringify(
+        {
+            type: "place",
+            piece: piece,
             row: row,
-            col: col,
-            piece: piece
+            col: col
         }
     ))
 }
@@ -99,16 +207,26 @@ function boardClick(event) {
     var row = Math.floor(y / space_height);
     var select = document.getElementById("piece")
     if (event.button === 0) {
-        var piece = select.value;
-        boardState[row][col] = piece;
-        sendUpdate(row, col, piece)
-    }
-    else if (event.button === 1) {
-        select.value = boardState[row][col]
+        if (!boardState.selectedPiece.exists) {
+            boardState.selectedPiece.exists = true;
+            boardState.selectedPiece.row = row;
+            boardState.selectedPiece.col = col;
+        }
+        else {
+            boardState.selectedPiece.exists = false;
+            sendMove(
+                boardState.selectedPiece.row,
+                boardState.selectedPiece.col,
+                row, col
+            );
+        }
     }
     else if (event.button === 2) {
-        boardState[row][col] = "empty";
-        sendUpdate(row, col, "empty")
+        sendPlace(
+            { type:select.value },
+            row,
+            col
+        )
     }
     drawBoard();
 }
