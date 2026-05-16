@@ -69,6 +69,7 @@ var boardCanvas = document.getElementById("chessboard");
 var ctx = boardCanvas.getContext("2d");
 var space_width = boardCanvas.width / 8;
 var space_height = boardCanvas.height / 8;
+var ebook = false;
 
 var chatlog = [];
 
@@ -196,6 +197,12 @@ function requestBoard() {
     socket.send("boardState")
 }
 
+function changeStyle() {
+    ebook = !ebook;
+    document.getElementById("ebook_style").disabled = !ebook;
+    document.getElementById("style").disabled = ebook;
+}
+
 function boardClick(event) {
     var boardCanvas = document.getElementById("chessboard");
     var space_width = boardCanvas.width / 8;
@@ -244,23 +251,23 @@ var pieces = {
     }
 }
 
-pieces.initImage("White Checker","assets/white_checker.webp");
-pieces.initImage("White Checker Queen","assets/white_checker_queen.webp");
+pieces.initImage("White Checker","assets/white_checker.png");
+pieces.initImage("White Checker Queen","assets/white_checker_queen.png");
 
-pieces.initImage("Black Checker","assets/black_checker.webp");
-pieces.initImage("Black Checker Queen","assets/black_checker_queen.webp");
+pieces.initImage("Black Checker","assets/black_checker.png");
+pieces.initImage("Black Checker Queen","assets/black_checker_queen.png");
 
-pieces.initImage("White Pawn", "assets/white_pawn.webp");
-pieces.initImage("White Rook", "assets/white_rook.webp");
-pieces.initImage("White Knight", "assets/white_knight.webp");
-pieces.initImage("White Bishop", "assets/white_bishop.webp");
-pieces.initImage("White Queen", "assets/white_queen.webp");
-pieces.initImage("White King", "assets/white_king.webp");
+pieces.initImage("White Pawn", "assets/white_pawn.png");
+pieces.initImage("White Rook", "assets/white_rook.png");
+pieces.initImage("White Knight", "assets/white_knight.png");
+pieces.initImage("White Bishop", "assets/white_bishop.png");
+pieces.initImage("White Queen", "assets/white_queen.png");
+pieces.initImage("White King", "assets/white_king.png");
 
-pieces.initImage("Black Pawn", "assets/black_pawn.webp");
-pieces.initImage("Black Rook", "assets/black_rook.webp");
-pieces.initImage("Black Knight", "assets/black_knight.webp");
-pieces.initImage("Black Bishop", "assets/black_bishop.webp");
-pieces.initImage("Black Queen", "assets/black_queen.webp");
-pieces.initImage("Black King", "assets/black_king.webp");
+pieces.initImage("Black Pawn", "assets/black_pawn.png");
+pieces.initImage("Black Rook", "assets/black_rook.png");
+pieces.initImage("Black Knight", "assets/black_knight.png");
+pieces.initImage("Black Bishop", "assets/black_bishop.png");
+pieces.initImage("Black Queen", "assets/black_queen.png");
+pieces.initImage("Black King", "assets/black_king.png");
 

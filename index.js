@@ -183,7 +183,8 @@ Bun.serve({
     routes: {
         "/": () => new Response(Bun.file("chessboard/index.html")),
         "/main.js": () => new Response(Bun.file("chessboard/main.js")),
-        "/style.css": () => new Response(Bun.file("chessboard/style.css"))
+        "/style.css": () => new Response(Bun.file("chessboard/style.css")),
+        "/style_ebook.css": () => new Response(Bun.file("chessboard/style_ebook.css"))
     },
     fetch(req, server) {
         const path = new URL(req.url).pathname
