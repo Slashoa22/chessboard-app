@@ -6,10 +6,11 @@ This is a small online chessboard app I made (to play checkers).
 
 # Features:
 
-- **2** Different Pieces
+- **16** Different Handcrafted Pieces
 - **1** Board
 - **0** Rule Checking
 - Some **online** functionality
+- **Chat**
 
 ---
 
